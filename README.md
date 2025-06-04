@@ -2,7 +2,7 @@
 
 <img src="https://i.imgur.com/9MteXcC.png" alt="Dueling Multiverse Logo" width="200" style="display:block;margin:0 auto 24px;" />
 
-A Next.js web application for building, saving, and dueling with custom Yu-Gi-Oh! decks.  
+A web application for building, saving, and dueling with custom Yu-Gi-Oh! decks.  
 This project uses Firebase for authentication and data storage, and features a modern deck editor, player chat, and a duel room for real-time play.
 
 ---
@@ -14,8 +14,9 @@ This project uses Firebase for authentication and data storage, and features a m
 - **Card Search & Filtering**: Find cards by type (Monster, Spell, Trap, All).
 - **Deck Management**: Load, update, and remove your saved decks.
 - **Duel Room**: Challenge other players in a head-to-head duel (WIP).
-- **Persistent Chat**: Post and reply to messages with avatars.(WIP)
+- **Persistent Chat**: Post and reply to messages with their google profile pic.(WIP)
 - **Responsive UI**: Built with React-Bootstrap and Next.js App Router.
+- **Ydk Upload**: Allow users to upload .ydk files for their decks that will be attacked to their user id on the database (Basically adds it to the decks.json in firebase).
 
 ---
 
