@@ -9,7 +9,7 @@ Dueling Multiverse is a web application for building, saving, and dueling with c
 ---
 
 - **[Wireframes/Prototype (Figma)](https://www.figma.com/design/LO9hJKWMAKUbptV6bHfm7w/Dueling-Multiverse?node-id=0-1&t=5gki2wJeYWK5CiYT-0)**
-- **[Live App](https://dueling-multiverse.vercel.app/)**
+- **[Live App](duelingmultiverse.netlify.app)**
 - **[Project Board](https://github.com/users/Jonah-Thomas/projects/1)**
 
 ---
@@ -36,13 +36,13 @@ The  user is a person who is either a fan of yugioh or want to try the game for 
 ## Screenshots
 
 ### Deck Editor
-![Deck Editor](https://imgur.com/RhPd20e)
+![Deck Editor](https://imgur.com/RhPd20e.jpg)
 
 ### Sign In
-![Sign In](https://imgur.com/i2KbWky)
+![Sign In](https://imgur.com/i2KbWky.jpg)
 
 ### Duelist Posts/Home Page (Chat/Home)
-![Home Page](https://imgur.com/Pl6LSd1)
+![Home Page](https://imgur.com/Pl6LSd1.jpg)
 
 ---
 
