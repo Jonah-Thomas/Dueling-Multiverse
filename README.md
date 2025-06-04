@@ -12,6 +12,7 @@ Dueling Multiverse is a web application for building, saving, and dueling with c
 - **[Live App](duelingmultiverse.netlify.app)**
 - **[Project Board](https://github.com/users/Jonah-Thomas/projects/1)**
 
+- **[ERD](https://dbdiagram.io/d/Dueling-Multiverse-6831ef1db9f7446da3fbc743)** 
 ---
 
 ## User Description
