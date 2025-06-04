@@ -2,8 +2,21 @@
 
 <img src="https://i.imgur.com/9MteXcC.png" alt="Dueling Multiverse Logo" width="200" style="display:block;margin:0 auto 24px;" />
 
-A web application for building, saving, and dueling with custom Yu-Gi-Oh! decks.  
-This project uses Firebase for authentication and data storage, and features a modern deck editor, player chat, and a duel room for real-time play.
+## Overview
+
+Dueling Multiverse is a web application for building, saving, and dueling with custom Yu-Gi-Oh! decks. Users can create and manage decks, chat with other duelists, and (soon) challenge each other in real-time duels. The app uses Firebase for authentication and data storage, and features a modern, responsive UI.
+
+---
+
+- **[Wireframes/Prototype (Figma)](https://www.figma.com/design/LO9hJKWMAKUbptV6bHfm7w/Dueling-Multiverse?node-id=0-1&t=5gki2wJeYWK5CiYT-0)**
+- **[Live App](https://dueling-multiverse.vercel.app/)**
+- **[Project Board](https://github.com/users/Jonah-Thomas/projects/1)**
+
+---
+
+## User Description
+
+The  user is a person who is either a fan of yugioh or want to try the game for the first time. They would try to build, save, and test custom decks online. THere is the option to chat with other players, share strategies, and eventually duel to see who is the better player.
 
 ---
 
@@ -14,87 +27,34 @@ This project uses Firebase for authentication and data storage, and features a m
 - **Card Search & Filtering**: Find cards by type (Monster, Spell, Trap, All).
 - **Deck Management**: Load, update, and remove your saved decks.
 - **Duel Room**: Challenge other players in a head-to-head duel (WIP).
-- **Persistent Chat**: Post and reply to messages with their google profile pic.(WIP)
+- **Persistent Chat**: Post and reply to messages with your Google profile pic (WIP).
 - **Responsive UI**: Built with React-Bootstrap and Next.js App Router.
-- **Ydk Upload**: Allow users to upload .ydk files for their decks that will be attacked to their user id on the database (Basically adds it to the decks.json in firebase).
-
----
-
-## Getting Started
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/YOUR_USERNAME/Dueling-Multiverse.git
-cd Dueling-Multiverse
-```
-
-### 2. Install Dependencies
-
-```bash
-npm install
-```
-
-### 3. Set Up Firebase
-
-- Create a Firebase project at [Firebase Console](https://console.firebase.google.com/).
-- Enable **Authentication** (Google sign-in).
-- Create a **Realtime Database** and set rules as needed.
-- Copy your Firebase config values into a new `.env` file (see `.env.sample` for structure).
-
-### 4. Configure Next.js Image Domains
-
-Make sure your `next.config.js` includes:
-```js
-images: {
-  domains: [
-    'images.ygoprodeck.com',
-    'i.imgur.com',
-    'lh3.googleusercontent.com'
-  ],
-},
-```
-
-### 5. Start the Development Server
-
-```bash
-npm run dev
-```
-Visit [http://localhost:3000](http://localhost:3000) to use the app.
-
----
-
-## Project Structure
-
-- `/src/app` - Main Next.js app pages (decks, duel, home, etc.)
-- `/src/components` - Reusable UI components (NavBar, SignIn, etc.)
-- `/src/api` - API utilities for cards and decks (Firebase)
-- `/src/utils` - Auth context and helpers
+- **YDK Upload**: Upload .ydk files for your decks and attach them to your user account.
 
 ---
 
 ## Screenshots
 
-<img src="https://i.imgur.com/9MteXcC.png" alt="Dueling Multiverse Logo" width="200" />
+### Deck Editor
+![Deck Editor](attachments/dueling-multiverse-deck-editor.png)
+
+### Sign In
+![Sign In](attachments/dueling-multiverse-sign-in.png)
+
+### Duelist Posts (Chat)
+![Duelist Posts](attachments/dueling-multiverse-chat.png)
 
 ---
 
-## Deployment
+## Contributors
 
-You can deploy this app to [Netlify](https://www.netlify.com/) or [Vercel](https://vercel.com/):
-
-- **Build Command:** `npm run build`
-- **Publish Directory:** `.next`
-
-**Remember:**  
-Add your environment variables to your deployment platform.
+- [Jonah Thomas](https://github.com/Jonah-Thomas)
 
 ---
 
-## Credits
+## Video Walkthrough
 
-- Card images from [YGOPRODeck API](https://ygoprodeck.com/api-guide/)
-- Built with [Next.js](https://nextjs.org/) and [Firebase](https://firebase.google.com/)
+[Loom Video Walkthrough (under 1 minute)](https://www.loom.com/) <!-- Replace with your actual Loom link -->
 
 ---
 
