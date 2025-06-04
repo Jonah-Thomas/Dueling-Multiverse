@@ -1,61 +1,106 @@
-# NextJS with Firebase Auth App Router Template
+# Dueling Multiverse
 
-[See Live Demo of this Template](https://drt-next-js-template-app-router.netlify.app/)
+<img src="https://i.imgur.com/9MteXcC.png" alt="Dueling Multiverse Logo" width="200" style="display:block;margin:0 auto 24px;" />
 
-## Topics
-- [Get Started](#get-started)
-- [Starting the Project](#starting-the-project)
-- [Deploying on Netlify](#deploying-on-netlify)
-___
+A Next.js web application for building, saving, and dueling with custom Yu-Gi-Oh! decks.  
+This project uses Firebase for authentication and data storage, and features a modern deck editor, player chat, and a duel room for real-time play.
+
+---
+
+## Features
+
+- **Firebase Authentication**: Secure login with Google.
+- **Deck Builder**: Create, edit, save, and delete Yu-Gi-Oh! decks.
+- **Card Search & Filtering**: Find cards by type (Monster, Spell, Trap, All).
+- **Deck Management**: Load, update, and remove your saved decks.
+- **Duel Room**: Challenge other players in a head-to-head duel (WIP).
+- **Persistent Chat**: Post and reply to messages with avatars.
+- **Responsive UI**: Built with React-Bootstrap and Next.js App Router.
+
+---
+
 ## Getting Started
-### Use Template
-#### 1. To get started, click the GREEN "Use this Template" button at the top of the repo
-<img width="915" alt="Screen Shot 2022-07-06 at 12 54 01 PM" src="https://user-images.githubusercontent.com/29741570/177612998-4aac9237-5a1e-4f13-8ae0-468587521564.png">
 
-#### 2. Make sure YOUR github account is selected in the dropdown and name your project
-<img width="763" alt="Screen Shot 2022-07-06 at 12 54 48 PM" src="https://user-images.githubusercontent.com/29741570/177613126-dd38f678-7553-4f27-8a4a-75680f14d71e.png">
+### 1. Clone the Repository
 
-#### 3. Clone your new repo to your local machine
-#### 4. Go to the **NEXT** section
+```bash
+git clone https://github.com/YOUR_USERNAME/Dueling-Multiverse.git
+cd Dueling-Multiverse
+```
 
-## Starting the Project
-1. Create a Firebase project and set up authentication. Use [these videos](https://vimeo.com/showcase/codetracker-firebase) as a refresher if needed.
-1. Create a `.env` file at the root of the project
-1. Copy/Paste the contents of the `.env.sample` file to your newly created `.env` file.
-1. Copy over all of your Firebase values into the `.env` file.
-1. Open the `package.json` file and change the `name` property to the name of your application, and `author` to  your name.
-1. From your command line, be in the root directory and run `npm install` OR `npm i` for short.
-1. Next, run `npm run prepare`. This command sets up husky to track eslint errors on commit that will make your deploy fail on Netlify.
-1. Run `npx eslint . --ext .js,.jsx`
-1. To start your application, run `npm run dev`. THIS IS THE COMMAND YOU WILL USE TO RUN YOUR DEVELOPMENT SERVER FROM NOW ON.
-1. Open [http://localhost:3000](http://localhost:3000) with your browser.
+### 2. Install Dependencies
 
-### If you see this, you are set to go!
-<img width="450" alt="Screen Shot 2022-07-06 at 1 07 27 PM" src="https://github.com/user-attachments/assets/deae25f0-01d5-44b4-be60-7297b0f6f0ef">
+```bash
+npm install
+```
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+### 3. Set Up Firebase
 
-**NOTES:** 
-- If you see the following error, you did not follow all the setup steps correctly and failed to add your Firebase creds. Go back and do that NOW.
+- Create a Firebase project at [Firebase Console](https://console.firebase.google.com/).
+- Enable **Authentication** (Google sign-in).
+- Create a **Realtime Database** and set rules as needed.
+- Copy your Firebase config values into a new `.env` file (see `.env.sample` for structure).
 
-<img width="1043" alt="Screen Shot 2022-07-06 at 11 18 45 AM" src="https://user-images.githubusercontent.com/29741570/177612501-c2628f18-4bbd-4de9-aae6-27ffba1172d6.png">
+### 4. Configure Next.js Image Domains
 
-### Deploying on Netlify
-Netlify will automatically detect your project and prepopulate the settings, but should something go wrong and it does not, here are the commands:
+Make sure your `next.config.js` includes:
+```js
+images: {
+  domains: [
+    'images.ygoprodeck.com',
+    'i.imgur.com',
+    'lh3.googleusercontent.com'
+  ],
+},
+```
 
-- Build Command: `npm run build`
-- Publish directory: `.next`
+### 5. Start the Development Server
 
-#### Additional Steps to Take on Netlify
-- Add Environmental Variables
-    - Any Enviromental variables you are using in your `.env` file should be added to Netlify. 
-        - Go to Site settings > Build & deploy > Environment > Environment variables and the keys and values there if you did not add them when you were deploying your site
+```bash
+npm run dev
+```
+Visit [http://localhost:3000](http://localhost:3000) to use the app.
 
-- Update Firebase URL Settings
-    - In Firebase under Authentication select sign in methods, scroll to Authorized domains. Add your Netlify URL.
-        
-## Learn More about Next.js
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
+
+- `/src/app` - Main Next.js app pages (decks, duel, home, etc.)
+- `/src/components` - Reusable UI components (NavBar, SignIn, etc.)
+- `/src/api` - API utilities for cards and decks (Firebase)
+- `/src/utils` - Auth context and helpers
+
+---
+
+## Screenshots
+
+<img src="https://i.imgur.com/9MteXcC.png" alt="Dueling Multiverse Logo" width="200" />
+
+---
+
+## Deployment
+
+You can deploy this app to [Netlify](https://www.netlify.com/) or [Vercel](https://vercel.com/):
+
+- **Build Command:** `npm run build`
+- **Publish Directory:** `.next`
+
+**Remember:**  
+Add your environment variables to your deployment platform.
+
+---
+
+## Credits
+
+- Card images from [YGOPRODeck API](https://ygoprodeck.com/api-guide/)
+- Built with [Next.js](https://nextjs.org/) and [Firebase](https://firebase.google.com/)
+
+---
+
+## License
+
+MIT
+
+---
+
+**Enjoy dueling in the multiverse!**
