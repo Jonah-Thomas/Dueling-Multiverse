@@ -16,7 +16,7 @@ Dueling Multiverse is a web application for building, saving, and dueling with c
 
 ## User Description
 
-The  user is a person who is either a fan of yugioh or want to try the game for the first time. They would try to build, save, and test custom decks online. THere is the option to chat with other players, share strategies, and eventually duel to see who is the better player.
+The  user is a person who is either a fan of yugioh or want to try the game for the first time. They would try to build, save, and test custom decks online. There is the option to chat with other players, share strategies, and eventually duel to see who is the better player.
 
 ---
 
@@ -36,13 +36,13 @@ The  user is a person who is either a fan of yugioh or want to try the game for 
 ## Screenshots
 
 ### Deck Editor
-![Deck Editor](attachments/dueling-multiverse-deck-editor.png)
+![Deck Editor](https://imgur.com/RhPd20e)
 
 ### Sign In
-![Sign In](attachments/dueling-multiverse-sign-in.png)
+![Sign In](https://imgur.com/i2KbWky)
 
-### Duelist Posts (Chat)
-![Duelist Posts](attachments/dueling-multiverse-chat.png)
+### Duelist Posts/Home Page (Chat/Home)
+![Home Page](https://imgur.com/Pl6LSd1)
 
 ---
 
