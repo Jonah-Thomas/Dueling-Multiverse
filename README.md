@@ -1,30 +1,13 @@
-# React Joke Generator
-
-[View Sample](https://ljkbro.csb.app/)
-
-## Topics
-- [Starting the Project](#starting-the-project)
-- [Deploying on Netlify](#deploying-on-netlify)
-
-## Project Deets
-You will be creating a Joke Generator!
-
-This project is meant to get you thinking in React and to help you with some concepts.
-
-### Acceptance Criteria:
-1. When a user first loads the app, a button appears on the DOM that reads "Get a Joke"
-1. When the user presses the "Get a Joke" button, an API call is made to the joke API and the joke setup appears on the DOM.
-1. When a user presses the "Get a Joke" button, the button text changes to "Get Punchline"
-1. When a user presses the "Get Punchline" button, both the joke setup and delivery are on the DOM along with a button that reads "Get Another Joke"
-1. When the user presses the "Get Another Joke" button, the app starts over from step 3.
-
-### Stretch Goal
-In future projects, you will have to make tickets for your work on project boards. Make at least 5 tickets that would have helped you stay organized in this project. Use [this resource](https://www.atlassian.com/agile/project-management/user-stories) to understand what a ticket looks like and how it should be written. Also, leverage ChatGPT to help with creating tickets so that you can learn faster.
-
-## NextJS with Firebase Auth App Router Template
+# NextJS with Firebase Auth App Router Template
 
 [See Live Demo of this Template](https://drt-next-js-template-app-router.netlify.app/)
 
+## Topics
+- [Get Started](#get-started)
+- [Starting the Project](#starting-the-project)
+- [Deploying on Netlify](#deploying-on-netlify)
+___
+## Getting Started
 ### Use Template
 #### 1. To get started, click the GREEN "Use this Template" button at the top of the repo
 <img width="915" alt="Screen Shot 2022-07-06 at 12 54 01 PM" src="https://user-images.githubusercontent.com/29741570/177612998-4aac9237-5a1e-4f13-8ae0-468587521564.png">
@@ -43,6 +26,7 @@ In future projects, you will have to make tickets for your work on project board
 1. Open the `package.json` file and change the `name` property to the name of your application, and `author` to  your name.
 1. From your command line, be in the root directory and run `npm install` OR `npm i` for short.
 1. Next, run `npm run prepare`. This command sets up husky to track eslint errors on commit that will make your deploy fail on Netlify.
+1. Run `npx eslint . --ext .js,.jsx`
 1. To start your application, run `npm run dev`. THIS IS THE COMMAND YOU WILL USE TO RUN YOUR DEVELOPMENT SERVER FROM NOW ON.
 1. Open [http://localhost:3000](http://localhost:3000) with your browser.
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
+import Image from 'next/image';
 import { signIn } from '../utils/auth';
 
 function Signin() {
@@ -9,14 +10,16 @@ function Signin() {
       style={{
         height: '90vh',
         padding: '30px',
-        maxWidth: '400px',
+        maxWidth: '600px',
         margin: '0 auto',
+        backgroundColor: '#341A37',
       }}
     >
-      <h1>Hi there!</h1>
-      <p>Click the button below to login!</p>
-      <Button type="button" size="lg" className="copy-btn" onClick={signIn}>
-        Sign In
+      <Image src="https://i.imgur.com/9MteXcC.png" alt="Dueling Logo" className="mb-4" width={480} height={350} style={{ paddingLeft: '120px' }} priority />
+      <h1>Welcome to a new Multiverse!</h1>
+      <p> Click the button below to Enter a New Dueling Experience!</p>
+      <Button type="button" size="lg" className="copy-btn" onClick={signIn} style={{ marginLeft: '30px' }}>
+        Duel!
       </Button>
     </div>
   );

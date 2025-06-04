@@ -1,8 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true, // React Strict Mode can help identify potential issues but is not required for DevTools.
+  reactStrictMode: true,
   eslint: {
-    dirs: ['pages', 'components', 'lib'], // Run ESLint on specified directories during development
+    dirs: ['pages', 'components', 'lib'],
+  },
+  images: {
+    domains: ['images.ygoprodeck.com', 'i.imgur.com', 'lh3.googleusercontent.com'],
   },
 };
 
