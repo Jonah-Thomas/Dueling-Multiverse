@@ -14,7 +14,7 @@ This project uses Firebase for authentication and data storage, and features a m
 - **Card Search & Filtering**: Find cards by type (Monster, Spell, Trap, All).
 - **Deck Management**: Load, update, and remove your saved decks.
 - **Duel Room**: Challenge other players in a head-to-head duel (WIP).
-- **Persistent Chat**: Post and reply to messages with avatars.
+- **Persistent Chat**: Post and reply to messages with avatars.(WIP)
 - **Responsive UI**: Built with React-Bootstrap and Next.js App Router.
 
 ---
