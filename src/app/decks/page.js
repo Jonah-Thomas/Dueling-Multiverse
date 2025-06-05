@@ -120,12 +120,41 @@ export default function DeckBuilder() {
     });
   };
 
-  const filteredCards = filter === 'All' ? allCards : allCards.filter((card) => card.type === filter);
+  // Only these types can go in Extra Deck
+  const EXTRA_TYPES = ['Fusion', 'Synchro', 'XYZ', 'Link'];
 
+  // Add card to deck with rules
   const handleAddCard = (card) => {
-    if (selectedDeck === 'Main') setMainDeck([...mainDeck, card]);
-    if (selectedDeck === 'Extra') setExtraDeck([...extraDeck, card]);
-    if (selectedDeck === 'Side') setSideDeck([...sideDeck, card]);
+    if (selectedDeck === 'Main') {
+      if (mainDeck.length >= 60) {
+        setSavedMessage('Main Deck cannot exceed 60 cards.');
+        setTimeout(() => setSavedMessage(''), 2000);
+        return;
+      }
+      if (!EXTRA_TYPES.includes(card.type)) setMainDeck([...mainDeck, card]);
+      else {
+        setSavedMessage('This card can only go in the Extra Deck.');
+        setTimeout(() => setSavedMessage(''), 2000);
+      }
+    } else if (selectedDeck === 'Extra') {
+      if (extraDeck.length >= 15) {
+        setSavedMessage('Extra Deck cannot exceed 15 cards.');
+        setTimeout(() => setSavedMessage(''), 2000);
+        return;
+      }
+      if (EXTRA_TYPES.includes(card.type)) setExtraDeck([...extraDeck, card]);
+      else {
+        setSavedMessage('Only Fusion, Synchro, XYZ, or Link cards allowed in Extra Deck.');
+        setTimeout(() => setSavedMessage(''), 2000);
+      }
+    } else if (selectedDeck === 'Side') {
+      if (sideDeck.length >= 15) {
+        setSavedMessage('Side Deck cannot exceed 15 cards.');
+        setTimeout(() => setSavedMessage(''), 2000);
+        return;
+      }
+      setSideDeck([...sideDeck, card]);
+    }
   };
 
   // Remove a card from a deck by index
@@ -134,6 +163,12 @@ export default function DeckBuilder() {
     if (deckType === 'Extra') setExtraDeck(extraDeck.filter((_, i) => i !== idx));
     if (deckType === 'Side') setSideDeck(sideDeck.filter((_, i) => i !== idx));
   };
+
+  // Filter cards based on the selected filter
+  const filteredCards = allCards.filter((card) => {
+    if (filter === 'All') return true;
+    return card.type === filter;
+  });
 
   // Helper to render card images with click-to-remove, a11y, and optimized images
   const renderCardImages = (deck, deckType) => (
@@ -306,14 +341,15 @@ export default function DeckBuilder() {
               minHeight: 200,
               maxHeight: 400,
               overflowY: 'auto',
-              width: 180,
+              width: 260, // wider card search window
             }}
           >
             <strong>Available Cards</strong>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
               {filteredCards.map((card, idx) => (
                 <li key={`${card.id}-${idx}`} style={{ margin: '10px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Image src={card.image} alt={card.name} title={card.name} width={48} height={70} style={{ borderRadius: 4, border: '1px solid #888', background: '#222' }} />
+                  <Image src={card.image} alt={card.name} title={card.name} width={64} height={90} style={{ borderRadius: 4, border: '1px solid #888', background: '#222' }} />
+                  <span style={{ flex: 1, marginLeft: 10, color: '#fff', fontSize: 14 }}>{card.name}</span>
                   <Button size="sm" variant="success" onClick={() => handleAddCard(card)} style={{ marginLeft: 8 }}>
                     Add
                   </Button>

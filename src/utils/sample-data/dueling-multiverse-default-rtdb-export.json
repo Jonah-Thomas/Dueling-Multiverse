@@ -1,0 +1,411 @@
+{
+  "cards": {
+    "-OR29NtNy1JQLaB-WwXt": {
+      "id": "46986414",
+      "name": "Dark Magician",
+      "type": "Monster",
+      "image": "https://images.ygoprodeck.com/images/cards/46986414.jpg"
+    },
+    "-OR29NtP-xHz5LnbP0D3": {
+      "id": "38033121",
+      "name": "Dark Magician Girl",
+      "type": "Monster",
+      "image": "https://images.ygoprodeck.com/images/cards/38033121.jpg"
+    },
+    "-OR29NtQEjscCmuDvE9s": {
+      "id": "70781052",
+      "name": "Summoned Skull",
+      "type": "Monster",
+      "image": "https://images.ygoprodeck.com/images/cards/70781052.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQH": {
+      "id": "14558127",
+      "name": "Celtic Guardian",
+      "type": "Monster",
+      "image": "https://images.ygoprodeck.com/images/cards/14558127.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQJ": {
+      "id": "40640057",
+      "name": "Kuriboh",
+      "type": "Monster",
+      "image": "https://images.ygoprodeck.com/images/cards/40640057.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQK": {
+      "id": "06368038",
+      "name": "Gaia The Fierce Knight",
+      "type": "Monster",
+      "image": "https://images.ygoprodeck.com/images/cards/06368038.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQL": {
+      "id": "87796900",
+      "name": "Winged Dragon, Guardian of the Fortress #1",
+      "type": "Monster",
+      "image": "https://images.ygoprodeck.com/images/cards/87796900.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQM": {
+      "id": "41392891",
+      "name": "Feral Imp",
+      "type": "Monster",
+      "image": "https://images.ygoprodeck.com/images/cards/41392891.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQN": {
+      "id": "32452818",
+      "name": "Beaver Warrior",
+      "type": "Monster",
+      "image": "https://images.ygoprodeck.com/images/cards/32452818.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQO": {
+      "id": "15025844",
+      "name": "Mystical Elf",
+      "type": "Monster",
+      "image": "https://images.ygoprodeck.com/images/cards/15025844.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQP": {
+      "id": "13039848",
+      "name": "Giant Soldier of Stone",
+      "type": "Monster",
+      "image": "https://images.ygoprodeck.com/images/cards/13039848.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQQ": {
+      "id": "31560081",
+      "name": "Magician of Faith",
+      "type": "Monster",
+      "image": "https://images.ygoprodeck.com/images/cards/31560081.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQR": {
+      "id": "44287299",
+      "name": "Man-Eater Bug",
+      "type": "Monster",
+      "image": "https://images.ygoprodeck.com/images/cards/44287299.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQS": {
+      "id": "65240384",
+      "name": "Big Shield Gardna",
+      "type": "Monster",
+      "image": "https://images.ygoprodeck.com/images/cards/65240384.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQT": {
+      "id": "78193831",
+      "name": "Buster Blader",
+      "type": "Monster",
+      "image": "https://images.ygoprodeck.com/images/cards/78193831.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQU": {
+      "id": "90876561",
+      "name": "Jack's Knight",
+      "type": "Monster",
+      "image": "https://images.ygoprodeck.com/images/cards/90876561.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQV": {
+      "id": "25652259",
+      "name": "Queen's Knight",
+      "type": "Monster",
+      "image": "https://images.ygoprodeck.com/images/cards/25652259.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQW": {
+      "id": "64788463",
+      "name": "King's Knight",
+      "type": "Monster",
+      "image": "https://images.ygoprodeck.com/images/cards/64788463.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQX": {
+      "id": "14778250",
+      "name": "Obnoxious Celtic Guard",
+      "type": "Monster",
+      "image": "https://images.ygoprodeck.com/images/cards/14778250.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQY": {
+      "id": "99785935",
+      "name": "Alpha The Magnet Warrior",
+      "type": "Monster",
+      "image": "https://images.ygoprodeck.com/images/cards/99785935.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQZ": {
+      "id": "39256679",
+      "name": "Beta The Magnet Warrior",
+      "type": "Monster",
+      "image": "https://images.ygoprodeck.com/images/cards/39256679.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQa": {
+      "id": "11549357",
+      "name": "Gamma The Magnet Warrior",
+      "type": "Monster",
+      "image": "https://images.ygoprodeck.com/images/cards/11549357.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQb": {
+      "id": "75347539",
+      "name": "Valkyrion the Magna Warrior",
+      "type": "Monster",
+      "image": "https://images.ygoprodeck.com/images/cards/75347539.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQc": {
+      "id": "2314238",
+      "name": "Dark Magic Attack",
+      "type": "Spell",
+      "image": "https://images.ygoprodeck.com/images/cards/2314238.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQd": {
+      "id": "24094653",
+      "name": "Polymerization",
+      "type": "Spell",
+      "image": "https://images.ygoprodeck.com/images/cards/24094653.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQe": {
+      "id": "83764718",
+      "name": "Monster Reborn",
+      "type": "Spell",
+      "image": "https://images.ygoprodeck.com/images/cards/83764718.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQf": {
+      "id": "72302403",
+      "name": "Swords of Revealing Light",
+      "type": "Spell",
+      "image": "https://images.ygoprodeck.com/images/cards/72302403.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQg": {
+      "id": "5318639",
+      "name": "Mystical Space Typhoon",
+      "type": "Spell",
+      "image": "https://images.ygoprodeck.com/images/cards/5318639.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQh": {
+      "id": "28553439",
+      "name": "Magical Dimension",
+      "type": "Spell",
+      "image": "https://images.ygoprodeck.com/images/cards/28553439.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQi": {
+      "id": "57953380",
+      "name": "Card of Sanctity",
+      "type": "Spell",
+      "image": "https://images.ygoprodeck.com/images/cards/57953380.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQj": {
+      "id": "40854197",
+      "name": "Diffusion Wave-Motion",
+      "type": "Spell",
+      "image": "https://images.ygoprodeck.com/images/cards/40854197.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQk": {
+      "id": "63519819",
+      "name": "Thousand Knives",
+      "type": "Spell",
+      "image": "https://images.ygoprodeck.com/images/cards/63519819.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQl": {
+      "id": "99789342",
+      "name": "Dark Magic Curtain",
+      "type": "Spell",
+      "image": "https://images.ygoprodeck.com/images/cards/99789342.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQm": {
+      "id": "05556668",
+      "name": "Exchange",
+      "type": "Spell",
+      "image": "https://images.ygoprodeck.com/images/cards/05556668.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQn": {
+      "id": "55144522",
+      "name": "Pot of Greed",
+      "type": "Spell",
+      "image": "https://images.ygoprodeck.com/images/cards/55144522.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQo": {
+      "id": "79571449",
+      "name": "Graceful Charity",
+      "type": "Spell",
+      "image": "https://images.ygoprodeck.com/images/cards/79571449.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQp": {
+      "id": "93108433",
+      "name": "Monster Recovery",
+      "type": "Spell",
+      "image": "https://images.ygoprodeck.com/images/cards/93108433.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQq": {
+      "id": "40703222",
+      "name": "Multiply",
+      "type": "Spell",
+      "image": "https://images.ygoprodeck.com/images/cards/40703222.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQr": {
+      "id": "81210420",
+      "name": "Magical Hats",
+      "type": "Trap",
+      "image": "https://images.ygoprodeck.com/images/cards/81210420.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQs": {
+      "id": "44095762",
+      "name": "Mirror Force",
+      "type": "Trap",
+      "image": "https://images.ygoprodeck.com/images/cards/44095762.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQt": {
+      "id": "00050755",
+      "name": "Magician's Circle",
+      "type": "Trap",
+      "image": "https://images.ygoprodeck.com/images/cards/00050755.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQu": {
+      "id": "62279055",
+      "name": "Magic Cylinder",
+      "type": "Trap",
+      "image": "https://images.ygoprodeck.com/images/cards/62279055.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQv": {
+      "id": "18807108",
+      "name": "Spellbinding Circle",
+      "type": "Trap",
+      "image": "https://images.ygoprodeck.com/images/cards/18807108.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQw": {
+      "id": "41420027",
+      "name": "Solemn Judgment",
+      "type": "Trap",
+      "image": "https://images.ygoprodeck.com/images/cards/41420027.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQx": {
+      "id": "04206964",
+      "name": "Trap Hole",
+      "type": "Trap",
+      "image": "https://images.ygoprodeck.com/images/cards/04206964.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQy": {
+      "id": "03797883",
+      "name": "Seven Tools of the Bandit",
+      "type": "Trap",
+      "image": "https://images.ygoprodeck.com/images/cards/03797883.jpg"
+    },
+    "-OR2LR6nLvBviL47aeQz": {
+      "id": "60082869",
+      "name": "Dust Tornado",
+      "type": "Trap",
+      "image": "https://images.ygoprodeck.com/images/cards/60082869.jpg"
+    },
+    "-OR2LR6nLvBviL47aeRA": {
+      "id": "97077563",
+      "name": "Call of the Haunted",
+      "type": "Trap",
+      "image": "https://images.ygoprodeck.com/images/cards/97077563.jpg"
+    },
+    "-OR2LR6nLvBviL47aeRB": {
+      "id": "77414722",
+      "name": "Magic Jammer",
+      "type": "Trap",
+      "image": "https://images.ygoprodeck.com/images/cards/77414722.jpg"
+    }
+  },
+  "decks": {
+    "-OR3DeckKey1": {
+      "name": "Yugi's Deck",
+      "owner": "user_uid_or_email_here",
+      "cards": [
+        "46986414",
+        "38033121",
+        "70781052",
+        "14558127",
+        "40640057",
+        "06368038",
+        "87796900",
+        "41392891",
+        "32452818",
+        "15025844",
+        "13039848",
+        "31560081",
+        "44287299",
+        "65240384",
+        "78193831",
+        "90876561",
+        "25652259",
+        "64788463",
+        "14778250",
+        "99785935",
+        "39256679",
+        "11549357",
+        "75347539",
+        "2314238",
+        "24094653",
+        "83764718",
+        "72302403",
+        "5318639",
+        "28553439",
+        "57953380",
+        "40854197",
+        "63519819",
+        "99789342",
+        "05556668",
+        "55144522",
+        "79571449",
+        "93108433",
+        "40703222",
+        "81210420",
+        "44095762",
+        "00050755",
+        "62279055",
+        "18807108",
+        "41420027",
+        "04206964",
+        "03797883",
+        "60082869",
+        "97077563",
+        "77414722"
+      ]
+    }
+  },
+  "posts": {
+    "-OR4PostKey1": {
+      "user": "Jonah Thomas",
+      "text": "Excited to duel in the multiverse!",
+      "timestamp": 1717526400000,
+      "photoURL": "https://lh3.googleusercontent.com/a/ACg8ocIbIrdZhaJ0mjRCzbPoAtwWrTsBTnH2Be-M0UmFF45IK7aIKGvt=s96-c",
+      "replies": [
+        {
+          "user": "Maria",
+          "text": "Welcome! Good luck with your decks!",
+          "timestamp": 1717527400000,
+          "photoURL": "https://i.imgur.com/9MteXcC.png"
+        }
+      ]
+    }
+  },
+  "lobbies": {
+    "-OR5LobbyKey1": {
+      "title": "Beginner Duel Room",
+      "description": "A friendly place for new duelists to learn and play.",
+      "owner": "Jonah Thomas",
+      "ownerId": "user_uid_jonah",
+      "players": [
+        "Jonah Thomas"
+      ],
+      "maxPlayers": 2,
+      "createdAt": 1717530000000
+    },
+    "-OR5LobbyKey2": {
+      "title": "Competitive Showdown",
+      "description": "Bring your best deck and duel for glory!",
+      "owner": "Maria",
+      "ownerId": "user_uid_maria",
+      "players": [
+        "Maria",
+        "Alex"
+      ],
+      "maxPlayers": 2,
+      "createdAt": 1717530500000
+    },
+    "-OR5LobbyKey3": {
+      "title": "Casual Hangout",
+      "description": "Just chilling and dueling for fun. All are welcome!",
+      "owner": "Sam",
+      "ownerId": "user_uid_sam",
+      "players": [
+        "Sam"
+      ],
+      "maxPlayers": 4,
+      "createdAt": 1717531000000
+    }
+  },
+  "onlineUsers": {
+    "user_uid_1": false,
+    "user_uid_2": false
+  }
+}

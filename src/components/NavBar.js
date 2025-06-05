@@ -35,6 +35,9 @@ export default function NavBar() {
             <Link className="nav-link" href="/decks">
               Deck Editor
             </Link>
+            <Link className="nav-link" href="/Lobby">
+              Duel Lobby
+            </Link>
           </Nav>
           <Button variant="light" onClick={signOut}>
             Sign Out
