@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button, Form, Card } from 'react-bootstrap';
-import { getLobbies, createLobby, updateLobby, deleteLobby } from '@/api/lobbyApi';
+import { createLobby, updateLobby, deleteLobby } from '@/api/lobbyApi';
 import { useAuth } from '@/utils/context/authContext';
 import firebase from 'firebase/app';
 import 'firebase/database';
@@ -25,12 +25,25 @@ export default function LobbyPage() {
     }
   }, [user]);
 
-  // Load lobbies
+  // Real-time lobbies
   useEffect(() => {
-    getLobbies().then(setLobbies);
+    const db = firebase.database();
+    const lobbiesRef = db.ref('lobbies');
+    const handleValue = (snapshot) => {
+      const data = snapshot.val();
+      const lobbyList = data
+        ? Object.entries(data).map(([firebaseKey, value]) => ({
+            firebaseKey,
+            ...value,
+          }))
+        : [];
+      setLobbies(lobbyList);
+    };
+    lobbiesRef.on('value', handleValue);
+    return () => lobbiesRef.off('value', handleValue);
   }, []);
 
-  // Create or update lobby
+  // Create or update lobby (host NOT in players array)
   const handleSubmit = async (e) => {
     e.preventDefault();
     const lobbyData = {
@@ -38,7 +51,7 @@ export default function LobbyPage() {
       description,
       owner: user.displayName,
       ownerId: user.uid,
-      players: [user.displayName],
+      players: [], // Host is NOT in the players array
       maxPlayers: Number(maxPlayers),
       createdAt: Date.now(),
     };
@@ -47,7 +60,6 @@ export default function LobbyPage() {
     } else {
       await createLobby(lobbyData);
     }
-    getLobbies().then(setLobbies);
     setTitle('');
     setDescription('');
     setMaxPlayers(2);
@@ -65,7 +77,7 @@ export default function LobbyPage() {
   // Delete lobby
   const handleDelete = async (firebaseKey) => {
     await deleteLobby(firebaseKey);
-    getLobbies().then(setLobbies);
+    // No need to manually refresh, real-time listener will update
   };
 
   // Check if both users are online
@@ -145,7 +157,6 @@ export default function LobbyPage() {
                     }
                     const updatedPlayers = Array.isArray(lobby.players) ? [...lobby.players, user.displayName] : [user.displayName];
                     await updateLobby(lobby.firebaseKey, { players: updatedPlayers });
-                    getLobbies().then(setLobbies);
                   }}
                 >
                   Join

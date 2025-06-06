@@ -40,6 +40,7 @@ function Home() {
     if (message.trim() !== '') {
       const newPost = {
         user: user.displayName,
+        userId: user.uid, // <-- store UID for ownership
         text: message,
         timestamp: Date.now(),
         photoURL: user.photoURL,
@@ -66,7 +67,6 @@ function Home() {
     ];
     // Update the post with the new replies array
     const updatedPost = { ...msg, replies: updatedReplies };
-    // Remove firebaseKey before sending to API (if you want to PATCH, you may need to implement updatePost in your API)
     const { firebaseKey, ...postData } = updatedPost;
     await fetch(`${process.env.NEXT_PUBLIC_DATABASE_URL}/posts/${msg.firebaseKey}.json`, {
       method: 'PATCH',
@@ -188,8 +188,8 @@ function Home() {
                     <strong>{msg.user}:</strong>&nbsp;{msg.text}
                   </span>
                   <span style={{ fontSize: '0.85em', color: '#ccc', marginLeft: '15px', whiteSpace: 'nowrap' }}>{formatTime(msg.timestamp)}</span>
-                  {/* Only show delete if logged in and user matches */}
-                  {user && msg.user === user.displayName && (
+                  {/* Only show delete if logged in and userId matches */}
+                  {user && msg.userId === user.uid && (
                     <Button size="sm" variant="danger" style={{ marginLeft: 8 }} onClick={() => handleDelete(msg.firebaseKey)}>
                       Delete
                     </Button>
