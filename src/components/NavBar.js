@@ -38,6 +38,9 @@ export default function NavBar() {
             <Link className="nav-link" href="/Lobby">
               Duel Lobby
             </Link>
+            <Link className="nav-link" href="/Profile">
+              Profile
+            </Link>
           </Nav>
           <Button variant="light" onClick={signOut}>
             Sign Out

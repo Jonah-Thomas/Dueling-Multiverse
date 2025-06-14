@@ -1,5 +1,3 @@
-/* eslint-disable react/no-array-index-key */
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -13,6 +11,8 @@ export default function DeckBuilder() {
   const { user } = useAuth();
   const userId = user?.uid || user?.email || 'guest';
 
+  // Deck type state
+  const [deckType, setDeckType] = useState('yugioh'); // 'yugioh' or 'mtg'
   const [allCards, setAllCards] = useState([]);
   const [mainDeck, setMainDeck] = useState([]);
   const [extraDeck, setExtraDeck] = useState([]);
@@ -24,40 +24,50 @@ export default function DeckBuilder() {
   const [savedDecks, setSavedDecks] = useState([]);
   const [selectedSavedDeck, setSelectedSavedDeck] = useState('');
 
-  // Load cards from API on mount
+  // Load cards from API on mount or deckType change
   useEffect(() => {
-    getCards().then(setAllCards);
-  }, []);
+    getCards(deckType).then((cards) => {
+      setAllCards(cards.filter((card) => (card.game || 'yugioh') === deckType));
+    });
+    setMainDeck([]);
+    setExtraDeck([]);
+    setSideDeck([]);
+    setDeckName('');
+    setSelectedSavedDeck('');
+    setFilter('All');
+  }, [deckType]);
 
-  // Load decks from database on mount (for this user only)
+  // Load decks from database on mount (for this user and public decks for this game)
   useEffect(() => {
     getDecks().then((decks) => {
-      const userDecks = decks.filter((deck) => deck.owner === userId);
+      const userDecks = decks.filter((deck) => (deck.owner === userId || deck.owner === 'public') && (deck.game || 'yugioh') === deckType);
       setSavedDecks(userDecks);
     });
-  }, [userId]);
+  }, [userId, deckType]);
 
   // Save deck handler (create or update)
   const handleSaveDeck = () => {
     if (!deckName.trim()) {
       setSavedMessage('Please enter a deck name.');
+      setTimeout(() => setSavedMessage(''), 2000);
       return;
     }
-    // Only save card IDs, not full objects
     const deckData = {
       name: deckName,
       owner: userId,
+      game: deckType,
       mainDeck: mainDeck.map((card) => card.id),
-      extraDeck: extraDeck.map((card) => card.id),
-      sideDeck: sideDeck.map((card) => card.id),
       savedAt: Date.now(),
     };
-
+    if (deckType === 'yugioh') {
+      deckData.extraDeck = extraDeck.map((card) => card.id);
+      deckData.sideDeck = sideDeck.map((card) => card.id);
+    }
     if (selectedSavedDeck) {
       updateDeck(selectedSavedDeck, deckData).then(() => {
         setSavedMessage('Deck updated!');
         getDecks().then((decks) => {
-          const userDecks = decks.filter((deck) => deck.owner === userId);
+          const userDecks = decks.filter((deck) => deck.owner === userId && (deck.game || 'yugioh') === deckType);
           setSavedDecks(userDecks);
         });
         setTimeout(() => setSavedMessage(''), 2000);
@@ -66,7 +76,7 @@ export default function DeckBuilder() {
       createDeck(deckData).then(() => {
         setSavedMessage('Deck saved!');
         getDecks().then((decks) => {
-          const userDecks = decks.filter((deck) => deck.owner === userId);
+          const userDecks = decks.filter((deck) => deck.owner === userId && (deck.game || 'yugioh') === deckType);
           setSavedDecks(userDecks);
         });
         setTimeout(() => setSavedMessage(''), 2000);
@@ -89,9 +99,17 @@ export default function DeckBuilder() {
     const deck = savedDecks.find((d) => d.firebaseKey === firebaseKey);
     if (deck) {
       setDeckName(deck.name);
-      setMainDeck(deck.mainDeck ? deck.mainDeck.map((id) => allCards.find((card) => card.id === id)).filter(Boolean) : []);
-      setExtraDeck(deck.extraDeck ? deck.extraDeck.map((id) => allCards.find((card) => card.id === id)).filter(Boolean) : []);
-      setSideDeck(deck.sideDeck ? deck.sideDeck.map((id) => allCards.find((card) => card.id === id)).filter(Boolean) : []);
+      // Support both mainDeck (yugioh) and cards (mtg/public)
+      if (deckType === 'mtg') {
+        const cardIds = deck.mainDeck || deck.cards || [];
+        setMainDeck(cardIds.map((id) => allCards.find((card) => card.id === id)).filter(Boolean));
+        setExtraDeck([]);
+        setSideDeck([]);
+      } else if (deckType === 'yugioh') {
+        setMainDeck(deck.mainDeck ? deck.mainDeck.map((id) => allCards.find((card) => card.id === id)).filter(Boolean) : []);
+        setExtraDeck(deck.extraDeck ? deck.extraDeck.map((id) => allCards.find((card) => card.id === id)).filter(Boolean) : []);
+        setSideDeck(deck.sideDeck ? deck.sideDeck.map((id) => allCards.find((card) => card.id === id)).filter(Boolean) : []);
+      }
       setSelectedSavedDeck(firebaseKey);
       setSavedMessage(`Loaded deck: ${deck.name}`);
       setTimeout(() => setSavedMessage(''), 2000);
@@ -113,78 +131,100 @@ export default function DeckBuilder() {
       setSideDeck([]);
       setSelectedSavedDeck('');
       getDecks().then((decks) => {
-        const userDecks = decks.filter((deck) => deck.owner === userId);
+        const userDecks = decks.filter((deck) => deck.owner === userId && (deck.game || 'yugioh') === deckType);
         setSavedDecks(userDecks);
       });
       setTimeout(() => setSavedMessage(''), 2000);
     });
   };
 
-  // Only these types can go in Extra Deck
+  // Only these types can go in Extra Deck (Yu-Gi-Oh!)
   const EXTRA_TYPES = ['Fusion', 'Synchro', 'XYZ', 'Link'];
 
   // Add card to deck with rules
   const handleAddCard = (card) => {
-    if (selectedDeck === 'Main') {
-      if (mainDeck.length >= 60) {
-        setSavedMessage('Main Deck cannot exceed 60 cards.');
+    if (deckType === 'yugioh') {
+      if (selectedDeck === 'Main') {
+        if (mainDeck.length >= 60) {
+          setSavedMessage('Main Deck cannot exceed 60 cards.');
+          setTimeout(() => setSavedMessage(''), 2000);
+          return;
+        }
+        if (!EXTRA_TYPES.includes(card.type)) setMainDeck([...mainDeck, card]);
+        else {
+          setSavedMessage('This card can only go in the Extra Deck.');
+          setTimeout(() => setSavedMessage(''), 2000);
+        }
+      } else if (selectedDeck === 'Extra') {
+        if (extraDeck.length >= 15) {
+          setSavedMessage('Extra Deck cannot exceed 15 cards.');
+          setTimeout(() => setSavedMessage(''), 2000);
+          return;
+        }
+        if (EXTRA_TYPES.includes(card.type)) setExtraDeck([...extraDeck, card]);
+        else {
+          setSavedMessage('Only Fusion, Synchro, XYZ, or Link cards allowed in Extra Deck.');
+          setTimeout(() => setSavedMessage(''), 2000);
+        }
+      } else if (selectedDeck === 'Side') {
+        if (sideDeck.length >= 15) {
+          setSavedMessage('Side Deck cannot exceed 15 cards.');
+          setTimeout(() => setSavedMessage(''), 2000);
+          return;
+        }
+        setSideDeck([...sideDeck, card]);
+      }
+    } else if (deckType === 'mtg') {
+      if (mainDeck.length >= 100) {
+        setSavedMessage('MTG deck cannot exceed 100 cards.');
         setTimeout(() => setSavedMessage(''), 2000);
         return;
       }
-      if (!EXTRA_TYPES.includes(card.type)) setMainDeck([...mainDeck, card]);
-      else {
-        setSavedMessage('This card can only go in the Extra Deck.');
-        setTimeout(() => setSavedMessage(''), 2000);
-      }
-    } else if (selectedDeck === 'Extra') {
-      if (extraDeck.length >= 15) {
-        setSavedMessage('Extra Deck cannot exceed 15 cards.');
-        setTimeout(() => setSavedMessage(''), 2000);
-        return;
-      }
-      if (EXTRA_TYPES.includes(card.type)) setExtraDeck([...extraDeck, card]);
-      else {
-        setSavedMessage('Only Fusion, Synchro, XYZ, or Link cards allowed in Extra Deck.');
-        setTimeout(() => setSavedMessage(''), 2000);
-      }
-    } else if (selectedDeck === 'Side') {
-      if (sideDeck.length >= 15) {
-        setSavedMessage('Side Deck cannot exceed 15 cards.');
-        setTimeout(() => setSavedMessage(''), 2000);
-        return;
-      }
-      setSideDeck([...sideDeck, card]);
+      setMainDeck([...mainDeck, card]);
     }
   };
 
   // Remove a card from a deck by index
-  const handleRemoveCard = (deckType, idx) => {
-    if (deckType === 'Main') setMainDeck(mainDeck.filter((_, i) => i !== idx));
-    if (deckType === 'Extra') setExtraDeck(extraDeck.filter((_, i) => i !== idx));
-    if (deckType === 'Side') setSideDeck(sideDeck.filter((_, i) => i !== idx));
+  const handleRemoveCard = (deckTypeToRemove, cardId) => {
+    if (deckType === 'yugioh') {
+      if (deckTypeToRemove === 'Main') setMainDeck(mainDeck.filter((card) => card.id !== cardId));
+      if (deckTypeToRemove === 'Extra') setExtraDeck(extraDeck.filter((card) => card.id !== cardId));
+      if (deckTypeToRemove === 'Side') setSideDeck(sideDeck.filter((card) => card.id !== cardId));
+    } else if (deckType === 'mtg') {
+      setMainDeck(mainDeck.filter((card) => card.id !== cardId));
+    }
   };
 
-  // Filter cards based on the selected filter
+  // Filter cards based on the selected filter and deckType
   const filteredCards = allCards.filter((card) => {
-    if (filter === 'All') return true;
-    return card.type === filter;
+    if (deckType === 'yugioh') {
+      if (filter === 'All') return true;
+      return card.type === filter;
+    } if (deckType === 'mtg') {
+      if (filter === 'All') return true;
+      if (filter === 'Creature') return card.type?.toLowerCase().includes('creature');
+      if (filter === 'Spell') return card.type?.toLowerCase().includes('instant') || card.type?.toLowerCase().includes('sorcery');
+      if (filter === 'Artifact') return card.type?.toLowerCase().includes('artifact');
+      return true;
+    }
+    return true;
   });
 
   // Helper to render card images with click-to-remove, a11y, and optimized images
-  const renderCardImages = (deck, deckType) => (
+  const renderCardImages = (deck, deckTypeToRender) => (
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, justifyContent: 'center' }}>
-      {deck.map((card, idx) => (
+      {deck.map((card) => (
         <button
-          key={`${card.id}-${idx}`}
+          key={card.id}
           type="button"
-          onClick={() => handleRemoveCard(deckType, idx)}
+          onClick={() => handleRemoveCard(deckTypeToRender, card.id)}
           style={{
             background: 'none',
             border: 'none',
             padding: 0,
             cursor: 'pointer',
           }}
-          aria-label={`Remove ${card.name} from ${deckType}`}
+          aria-label={`Remove ${card.name} from ${deckTypeToRender}`}
         >
           <Image
             src={card?.image}
@@ -203,6 +243,46 @@ export default function DeckBuilder() {
       ))}
     </div>
   );
+
+  // Deck type dropdown and filter buttons
+  const yugiohFilters = (
+    <>
+      <Button variant={filter === 'Monster' ? 'primary' : 'secondary'} className="me-2" onClick={() => setFilter('Monster')}>
+        Monsters
+      </Button>
+      <Button variant={filter === 'Spell' ? 'primary' : 'secondary'} className="me-2" onClick={() => setFilter('Spell')}>
+        Spells
+      </Button>
+      <Button variant={filter === 'Trap' ? 'primary' : 'secondary'} onClick={() => setFilter('Trap')}>
+        Traps
+      </Button>
+      <Button variant={filter === 'All' ? 'primary' : 'secondary'} className="ms-2" onClick={() => setFilter('All')}>
+        All
+      </Button>
+    </>
+  );
+  const mtgFilters = (
+    <>
+      <Button variant={filter === 'Creature' ? 'primary' : 'secondary'} className="me-2" onClick={() => setFilter('Creature')}>
+        Creatures
+      </Button>
+      <Button variant={filter === 'Spell' ? 'primary' : 'secondary'} className="me-2" onClick={() => setFilter('Spell')}>
+        Spells
+      </Button>
+      <Button variant={filter === 'Artifact' ? 'primary' : 'secondary'} className="me-2" onClick={() => setFilter('Artifact')}>
+        Artifacts
+      </Button>
+      <Button variant={filter === 'All' ? 'primary' : 'secondary'} className="ms-2" onClick={() => setFilter('All')}>
+        All
+      </Button>
+    </>
+  );
+
+  // Find the selected deck object
+  const selectedDeckObj = savedDecks.find((d) => d.firebaseKey === selectedSavedDeck);
+
+  // Determine if the selected deck is public
+  const isPublicDeck = selectedDeckObj?.owner === 'public';
 
   return (
     <div
@@ -238,15 +318,33 @@ export default function DeckBuilder() {
             minWidth: 120,
           }}
         >
-          <Button variant={selectedDeck === 'Main' ? 'primary' : 'secondary'} className="mb-3" onClick={() => setSelectedDeck('Main')} style={{ width: 100 }}>
-            Main Deck
-          </Button>
-          <Button variant={selectedDeck === 'Extra' ? 'primary' : 'secondary'} className="mb-3" onClick={() => setSelectedDeck('Extra')} style={{ width: 100 }}>
-            Extra Deck
-          </Button>
-          <Button variant={selectedDeck === 'Side' ? 'primary' : 'secondary'} className="mb-3" onClick={() => setSelectedDeck('Side')} style={{ width: 100 }}>
-            Side Deck
-          </Button>
+          {/* Deck Type Dropdown */}
+          <Form.Group style={{ marginBottom: 20, width: 120 }}>
+            <Form.Label>Deck Type</Form.Label>
+            <Form.Select value={deckType} onChange={(e) => setDeckType(e.target.value)} style={{ width: 120 }}>
+              <option value="yugioh">Yu-Gi-Oh!</option>
+              <option value="mtg">Magic: The Gathering</option>
+            </Form.Select>
+          </Form.Group>
+          {/* Deck Section Buttons */}
+          {deckType === 'yugioh' && (
+            <>
+              <Button variant={selectedDeck === 'Main' ? 'primary' : 'secondary'} className="mb-3" onClick={() => setSelectedDeck('Main')} style={{ width: 100 }}>
+                Main Deck
+              </Button>
+              <Button variant={selectedDeck === 'Extra' ? 'primary' : 'secondary'} className="mb-3" onClick={() => setSelectedDeck('Extra')} style={{ width: 100 }}>
+                Extra Deck
+              </Button>
+              <Button variant={selectedDeck === 'Side' ? 'primary' : 'secondary'} className="mb-3" onClick={() => setSelectedDeck('Side')} style={{ width: 100 }}>
+                Side Deck
+              </Button>
+            </>
+          )}
+          {deckType === 'mtg' && (
+            <Button variant="primary" className="mb-3" style={{ width: 100 }} disabled>
+              Main Deck
+            </Button>
+          )}
         </div>
 
         {/* Center Deck Editor */}
@@ -289,23 +387,32 @@ export default function DeckBuilder() {
               ))}
             </Form.Select>
           </Form.Group>
-          <Button variant="success" onClick={handleSaveDeck} style={{ marginBottom: 10 }}>
-            {selectedSavedDeck ? 'Update Deck' : 'Save Deck'}
-          </Button>
-          <Button variant="danger" onClick={handleDeleteDeck} style={{ marginBottom: 10, marginLeft: 10 }} disabled={!selectedSavedDeck}>
-            Delete Deck
-          </Button>
+          {!isPublicDeck && (
+            <>
+              <Button variant="success" onClick={handleSaveDeck} style={{ marginBottom: 10 }}>
+                {selectedSavedDeck ? 'Save Deck' : 'Create Deck'}
+              </Button>
+              <Button variant="danger" onClick={handleDeleteDeck} style={{ marginBottom: 10, marginLeft: 10 }} disabled={!selectedSavedDeck}>
+                Delete Deck
+              </Button>
+            </>
+          )}
+          {isPublicDeck && <div style={{ color: '#ff0', marginBottom: 10, textAlign: 'center' }}>This is a public deck. You can view it, but not update or delete it.</div>}
           {savedMessage && <div style={{ color: '#0f0', marginBottom: 10, textAlign: 'center' }}>{savedMessage}</div>}
           <div style={{ width: '100%', marginBottom: 16 }}>
-            <strong>Main Deck:</strong> {mainDeck.length} cards
+            <strong>Main Deck:</strong> {mainDeck.length} cards {deckType === 'mtg' && <span style={{ color: '#0ff' }}>(Max 100)</span>}
             <div style={{ minHeight: 40, marginBottom: 10, background: '#39365a', borderRadius: 8, padding: 8, display: 'flex', justifyContent: 'center' }}>{renderCardImages(mainDeck, 'Main')}</div>
-            <strong>Extra Deck:</strong> {extraDeck.length} cards
-            <div style={{ minHeight: 40, marginBottom: 10, background: '#39365a', borderRadius: 8, padding: 8, display: 'flex', justifyContent: 'center' }}>{renderCardImages(extraDeck, 'Extra')}</div>
-            <strong>Side Deck:</strong> {sideDeck.length} cards
-            <div style={{ minHeight: 40, background: '#39365a', borderRadius: 8, padding: 8, display: 'flex', justifyContent: 'center' }}>{renderCardImages(sideDeck, 'Side')}</div>
+            {deckType === 'yugioh' && (
+              <>
+                <strong>Extra Deck:</strong> {extraDeck.length} cards
+                <div style={{ minHeight: 40, marginBottom: 10, background: '#39365a', borderRadius: 8, padding: 8, display: 'flex', justifyContent: 'center' }}>{renderCardImages(extraDeck, 'Extra')}</div>
+                <strong>Side Deck:</strong> {sideDeck.length} cards
+                <div style={{ minHeight: 40, background: '#39365a', borderRadius: 8, padding: 8, display: 'flex', justifyContent: 'center' }}>{renderCardImages(sideDeck, 'Side')}</div>
+              </>
+            )}
           </div>
           <div style={{ marginTop: 16, color: '#ccc', textAlign: 'center' }}>
-            <em>Select a deck on the left, then add cards from the right.</em>
+            <em>{deckType === 'yugioh' ? 'Select a deck on the left, then add cards from the right.' : 'Magic: The Gathering decks use only a Main Deck (max 100 cards).'}</em>
           </div>
         </div>
 
@@ -319,20 +426,7 @@ export default function DeckBuilder() {
             minWidth: 220,
           }}
         >
-          <div style={{ marginBottom: 16 }}>
-            <Button variant={filter === 'Monster' ? 'primary' : 'secondary'} className="me-2" onClick={() => setFilter('Monster')}>
-              Monsters
-            </Button>
-            <Button variant={filter === 'Spell' ? 'primary' : 'secondary'} className="me-2" onClick={() => setFilter('Spell')}>
-              Spells
-            </Button>
-            <Button variant={filter === 'Trap' ? 'primary' : 'secondary'} onClick={() => setFilter('Trap')}>
-              Traps
-            </Button>
-            <Button variant={filter === 'All' ? 'primary' : 'secondary'} className="ms-2" onClick={() => setFilter('All')}>
-              All
-            </Button>
-          </div>
+          <div style={{ marginBottom: 16 }}>{deckType === 'yugioh' ? yugiohFilters : mtgFilters}</div>
           <div
             style={{
               background: '#39365a',
@@ -341,18 +435,41 @@ export default function DeckBuilder() {
               minHeight: 200,
               maxHeight: 400,
               overflowY: 'auto',
-              width: 260, // wider card search window
+              width: 260,
             }}
           >
             <strong>Available Cards</strong>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-              {filteredCards.map((card, idx) => (
-                <li key={`${card.id}-${idx}`} style={{ margin: '10px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Image src={card.image} alt={card.name} title={card.name} width={64} height={90} style={{ borderRadius: 4, border: '1px solid #888', background: '#222' }} />
-                  <span style={{ flex: 1, marginLeft: 10, color: '#fff', fontSize: 14 }}>{card.name}</span>
-                  <Button size="sm" variant="success" onClick={() => handleAddCard(card)} style={{ marginLeft: 8 }}>
-                    Add
-                  </Button>
+              {filteredCards.map((card) => (
+                <li key={card.id} style={{ marginBottom: 8 }}>
+                  <button
+                    type="button"
+                    onClick={() => handleAddCard(card)}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      padding: 0,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      color: 'inherit',
+                    }}
+                    aria-label={`Add ${card.name} to deck`}
+                  >
+                    <Image
+                      src={card.image}
+                      alt={card.name}
+                      width={40}
+                      height={58}
+                      style={{
+                        borderRadius: 4,
+                        border: '1px solid #888',
+                        background: '#222',
+                        marginRight: 8,
+                      }}
+                    />
+                    <span>{card.name}</span>
+                  </button>
                 </li>
               ))}
             </ul>

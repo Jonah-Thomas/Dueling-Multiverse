@@ -2,6 +2,33 @@ import { clientCredentials } from '../utils/client';
 
 const endpoint = clientCredentials.databaseURL;
 
+// Helper to fetch a single card by ID from the cards API
+const getCardById = (cardId) =>
+  fetch(`${endpoint}/cards.json?orderBy="id"&equalTo="${cardId}"`)
+    .then((res) => res.json())
+    .then((data) => {
+      // data is an object with firebase keys, so get the first value
+      const values = Object.values(data || {});
+      return values.length > 0 ? values[0] : null;
+    });
+
+// Get a deck by Firebase key and return full card objects from the cards API
+export const getDeckWithCards = async (deckId) => {
+  // Fetch the deck object
+  const deckRes = await fetch(`${endpoint}/decks/${deckId}.json`);
+  const deckObj = await deckRes.json();
+  if (!deckObj) return [];
+
+  // Support both "cards" and "mainDeck" arrays
+  const cardIds = deckObj.cards || deckObj.mainDeck || [];
+
+  // Fetch all card objects in parallel
+  const cardObjects = await Promise.all(cardIds.map((cardId) => getCardById(cardId)));
+
+  // Filter out any nulls (missing cards)
+  return cardObjects.filter(Boolean);
+};
+
 // Get all decks
 const getDecks = () =>
   new Promise((resolve, reject) => {
@@ -37,6 +64,19 @@ const createDeck = (deckObj) =>
       .then(resolve)
       .catch(reject);
   });
+
+// Get all decks for a user by UID
+export const getUserDecks = (uid) =>
+  fetch(`${endpoint}/decks.json?orderBy="owner"&equalTo="${uid}"`)
+    .then((res) => res.json())
+    .then((data) =>
+      data
+        ? Object.entries(data).map(([firebaseKey, value]) => ({
+            firebaseKey,
+            ...value,
+          }))
+        : [],
+    );
 
 // Delete a deck by Firebase key
 const deleteDeck = (firebaseKey) =>

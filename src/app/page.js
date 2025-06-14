@@ -8,7 +8,9 @@ import { useState, useEffect } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import { useAuth } from '@/utils/context/authContext';
 import Image from 'next/image';
-import { getPosts, createPost, deletePost } from '@/api/postApi';
+import { getPosts, createPost, deletePost, updatePost } from '@/api/postApi';
+import firebase from 'firebase/app';
+import 'firebase/database';
 
 function Home() {
   const { user } = useAuth();
@@ -18,12 +20,23 @@ function Home() {
   const [replyText, setReplyText] = useState('');
   const [loading, setLoading] = useState(true);
 
-  // Load posts from API on mount
+  // Real-time posts listener
   useEffect(() => {
-    getPosts().then((data) => {
-      setMessages(data.sort((a, b) => a.timestamp - b.timestamp));
+    const db = firebase.database();
+    const postsRef = db.ref('posts');
+    const handleValue = (snapshot) => {
+      const data = snapshot.val();
+      const postList = data
+        ? Object.entries(data).map(([firebaseKey, value]) => ({
+            firebaseKey,
+            ...value,
+          }))
+        : [];
+      setMessages(postList.sort((a, b) => a.timestamp - b.timestamp));
       setLoading(false);
-    });
+    };
+    postsRef.on('value', handleValue);
+    return () => postsRef.off('value', handleValue);
   }, []);
 
   // Remove messages older than 30 minutes every minute (optional, for UI only)
@@ -40,14 +53,13 @@ function Home() {
     if (message.trim() !== '') {
       const newPost = {
         user: user.displayName,
-        userId: user.uid, // <-- store UID for ownership
+        userId: user.uid,
         text: message,
         timestamp: Date.now(),
         photoURL: user.photoURL,
         replies: [],
       };
       await createPost(newPost);
-      getPosts().then((data) => setMessages(data.sort((a, b) => a.timestamp - b.timestamp)));
       setMessage('');
     }
   };
@@ -65,15 +77,8 @@ function Home() {
         photoURL: user.photoURL,
       },
     ];
-    // Update the post with the new replies array
-    const updatedPost = { ...msg, replies: updatedReplies };
-    const { firebaseKey, ...postData } = updatedPost;
-    await fetch(`${process.env.NEXT_PUBLIC_DATABASE_URL}/posts/${msg.firebaseKey}.json`, {
-      method: 'PATCH',
-      body: JSON.stringify({ replies: updatedReplies }),
-      headers: { 'Content-Type': 'application/json' },
-    });
-    getPosts().then((data) => setMessages(data.sort((a, b) => a.timestamp - b.timestamp)));
+    // Use your API helper instead of fetch
+    await updatePost(msg.firebaseKey, { replies: updatedReplies });
     setReplyText('');
     setReplyingTo(null);
   };
@@ -81,7 +86,6 @@ function Home() {
   // Delete a post
   const handleDelete = async (firebaseKey) => {
     await deletePost(firebaseKey);
-    getPosts().then((data) => setMessages(data.sort((a, b) => a.timestamp - b.timestamp)));
   };
 
   const formatTime = (timestamp) => {
@@ -196,8 +200,9 @@ function Home() {
                   )}
                 </div>
                 <div style={{ marginTop: 6 }}>
+                  {/* Show reply button for all posts if logged in */}
                   {user && (
-                    <Button size="sm" variant="secondary" onClick={() => setReplyingTo(msgIdx)} style={{ marginRight: 8 }}>
+                    <Button size="sm" variant="secondary" onClick={() => setReplyingTo(msgIdx)}>
                       Reply
                     </Button>
                   )}

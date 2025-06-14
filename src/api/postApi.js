@@ -29,9 +29,18 @@ export const deletePost = (firebaseKey) =>
     method: 'DELETE',
   });
 
+// Update a post by firebaseKey
+export const updatePost = (firebaseKey, data) =>
+  fetch(`${endpoint}/posts/${firebaseKey}.json`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+    headers: { 'Content-Type': 'application/json' },
+  }).then((res) => res.json());
+
 // Export all functions
 export default {
   getPosts,
   createPost,
   deletePost,
+  updatePost,
 };
