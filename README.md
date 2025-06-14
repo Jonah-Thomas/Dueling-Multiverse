@@ -55,7 +55,7 @@ The  user is a person who is either a fan of yugioh or want to try the game for 
 
 ## Video Walkthrough
 
-[Loom Video Walkthrough (under 1 minute)](https://www.loom.com/share/de89c20f1c704734be39e3ab58068f8e?sid=7438f186-ec4e-42c0-a383-d8a9a4ecd75d)
+[Loom Video Walkthrough](https://www.loom.com/share/dd5f3730ec1242c98bfc22311721f2fe?sid=5b170239-2514-458c-85f8-45bb1d730440)
 
 ---
 

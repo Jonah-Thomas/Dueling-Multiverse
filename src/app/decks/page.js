@@ -1,3 +1,5 @@
+/* eslint-disable react/no-array-index-key */
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -143,6 +145,26 @@ export default function DeckBuilder() {
 
   // Add card to deck with rules
   const handleAddCard = (card) => {
+    if (!deckName.trim()) {
+      setSavedMessage('Please enter a deck name before adding cards.');
+      setTimeout(() => setSavedMessage(''), 2000);
+      return;
+    }
+
+    // Count copies in the relevant deck section
+    let deckSection = mainDeck;
+    if (deckType === 'yugioh') {
+      if (selectedDeck === 'Main') deckSection = mainDeck;
+      else if (selectedDeck === 'Extra') deckSection = extraDeck;
+      else if (selectedDeck === 'Side') deckSection = sideDeck;
+    }
+    const copies = deckSection.filter((c) => c.id === card.id).length;
+    if (copies >= 3) {
+      setSavedMessage('You can only have up to 3 copies of the same card in a deck.');
+      setTimeout(() => setSavedMessage(''), 2000);
+      return;
+    }
+
     if (deckType === 'yugioh') {
       if (selectedDeck === 'Main') {
         if (mainDeck.length >= 60) {
@@ -200,7 +222,8 @@ export default function DeckBuilder() {
     if (deckType === 'yugioh') {
       if (filter === 'All') return true;
       return card.type === filter;
-    } if (deckType === 'mtg') {
+    }
+    if (deckType === 'mtg') {
       if (filter === 'All') return true;
       if (filter === 'Creature') return card.type?.toLowerCase().includes('creature');
       if (filter === 'Spell') return card.type?.toLowerCase().includes('instant') || card.type?.toLowerCase().includes('sorcery');
@@ -213,9 +236,9 @@ export default function DeckBuilder() {
   // Helper to render card images with click-to-remove, a11y, and optimized images
   const renderCardImages = (deck, deckTypeToRender) => (
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, justifyContent: 'center' }}>
-      {deck.map((card) => (
+      {deck.map((card, idx) => (
         <button
-          key={card.id}
+          key={`${card.id}-${idx}`}
           type="button"
           onClick={() => handleRemoveCard(deckTypeToRender, card.id)}
           style={{
@@ -375,13 +398,23 @@ export default function DeckBuilder() {
             <Form.Select
               value={selectedSavedDeck}
               onChange={(e) => {
-                setSelectedSavedDeck(e.target.value);
-                handleLoadDeck(e.target.value);
+                const val = e.target.value;
+                setSelectedSavedDeck(val);
+                if (!val) {
+                  setDeckName('');
+                  setMainDeck([]);
+                  setExtraDeck([]);
+                  setSideDeck([]);
+                  setSavedMessage('Deck cleared.');
+                  setTimeout(() => setSavedMessage(''), 2000);
+                } else {
+                  handleLoadDeck(val);
+                }
               }}
             >
               <option value="">Select a deck</option>
-              {savedDecks.map((deck) => (
-                <option key={deck.firebaseKey} value={deck.firebaseKey}>
+              {savedDecks.map((deck, idx) => (
+                <option key={`${deck.firebaseKey}-${idx}`} value={deck.firebaseKey}>
                   {deck.name}
                 </option>
               ))}
@@ -440,8 +473,8 @@ export default function DeckBuilder() {
           >
             <strong>Available Cards</strong>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-              {filteredCards.map((card) => (
-                <li key={card.id} style={{ marginBottom: 8 }}>
+              {filteredCards.map((card, idx) => (
+                <li key={`${card.id}-${idx}`} style={{ marginBottom: 8 }}>
                   <button
                     type="button"
                     onClick={() => handleAddCard(card)}
