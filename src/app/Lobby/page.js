@@ -1,3 +1,5 @@
+/* eslint-disable consistent-return */
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -96,15 +98,6 @@ export default function LobbyPage() {
     await deleteLobby(firebaseKey);
   };
 
-  // Check if both users are online
-  const areBothOnline = async (hostId, clientId) => {
-    const db = firebase.database();
-    const hostRef = db.ref(`onlineUsers/${hostId}`);
-    const clientRef = db.ref(`onlineUsers/${clientId}`);
-    const [hostSnap, clientSnap] = await Promise.all([hostRef.once('value'), clientRef.once('value')]);
-    return !!hostSnap.val() && !!clientSnap.val();
-  };
-
   // Handle deck selection for a lobby (for after joining, if you want to allow changing)
   const handleDeckSelect = async (lobby, deckId) => {
     const decks = { ...(lobby.decks || {}) };
@@ -118,64 +111,94 @@ export default function LobbyPage() {
     router.push(`/Field?lobby=${lobby.firebaseKey}`);
   };
 
-  // Leave lobby logic (no-unused-vars and no-restricted-syntax fixed)
+  // Leave lobby logic (delete lobby if host leaves and no players remain)
   const handleLeave = async (lobby) => {
     const db = firebase.database();
     const lobbiesRef = db.ref('lobbies');
     const lobbyRef = lobbiesRef.child(lobby.firebaseKey);
 
-    // Remove user from players array and decks
-    const newPlayers = (lobby.players || []).filter((name) => name !== user.displayName);
+    // Always treat players as an array of UIDs
+    const players = Array.isArray(lobby.players) ? lobby.players : [];
+    const newPlayers = players.filter((uid) => uid !== user.uid);
     const newDecks = { ...(lobby.decks || {}) };
     delete newDecks[user.uid];
 
-    // If host leaves, assign new owner if possible
-    const updates = { players: newPlayers, decks: newDecks };
+    // If host leaves
     if (lobby.ownerId === user.uid) {
-      if (newPlayers.length > 0) {
-        // Assign new owner to the first player
-        const usersRef = db.ref('users');
-        let newOwnerId = null;
-        const newOwnerName = newPlayers[0];
-        // Use array find instead of for...of
-        await usersRef.once('value').then((snap) => {
-          const users = snap.val() || {};
-          const found = Object.entries(users).find(([, u]) => u.displayName === newOwnerName);
-          if (found) {
-            const [newId] = found; // Use array destructuring
-            newOwnerId = newId;
-          }
-        });
-        updates.owner = newOwnerName;
-        updates.ownerId = newOwnerId || '';
-      } else {
+      if (newPlayers.length === 0) {
         // No players left, remove lobby
         await lobbyRef.remove();
         return;
-      }
+      } 
+        // Assign new owner (first player in the array)
+        const newOwnerUid = newPlayers[0];
+        await lobbyRef.update({
+          players: newPlayers,
+          decks: newDecks,
+          owner: lobby.userProfiles?.[newOwnerUid]?.displayName || '',
+          ownerId: newOwnerUid || '',
+        });
+        return;
+      
     }
-    await lobbyRef.update(updates);
+
+    // If not host, just update players and decks
+    await lobbyRef.update({
+      players: newPlayers,
+      decks: newDecks,
+    });
   };
 
-  // Route to field if single player (owner) is present and user joins
+  // Join lobby logic (use UID, not displayName)
   const handleJoin = async (lobby) => {
-    const bothOnline = await areBothOnline(lobby.ownerId, user.uid);
-    if (!bothOnline) {
-      alert('Both host and client must be online to join this lobby.');
-      return;
-    }
-    const updatedPlayers = Array.isArray(lobby.players) ? [...lobby.players, user.displayName] : [user.displayName];
+    // Only add user.uid if not already present
+    const players = Array.isArray(lobby.players) ? lobby.players : [];
+    const updatedPlayers = players.includes(user.uid) ? players : [...players, user.uid];
     const decks = { ...(lobby.decks || {}) };
     if (selectedDeck) {
       decks[user.uid] = selectedDeck;
     }
     await updateLobby(lobby.firebaseKey, { players: updatedPlayers, decks });
 
-    // If only one player (owner) is present, route to field
-    if (updatedPlayers.length === 1 && lobby.ownerId) {
-      router.push(`/Field?lobby=${lobby.firebaseKey}&owner=${lobby.ownerId}`);
-    }
+    // --- ADD THIS: ensure user is added to players and userProfiles objects for Field page sync ---
+    const db = firebase.database();
+    const lobbyRef = db.ref(`lobbies/${lobby.firebaseKey}`);
+
+    // Add to players object (for Field page state)
+    await lobbyRef.child(`players/${user.uid}`).set({
+      deck: [], // Will be initialized in Field page if needed
+      hand: [],
+      graveyard: [],
+      banished: [],
+      field: {},
+      fieldSpell: null,
+    });
+
+    // Add to userProfiles object (for display name/avatar)
+    await lobbyRef.child(`userProfiles/${user.uid}`).set({
+      displayName: user.displayName,
+      photoURL: user.photoURL,
+    });
   };
+
+  // Listen for lobby start and redirect both players (fix: only redirect if user is in players array)
+  useEffect(() => {
+    if (!user) return;
+    const db = firebase.database();
+    const lobbiesRef = db.ref('lobbies');
+    const handleValue = (snapshot) => {
+      const data = snapshot.val();
+      if (!data) return;
+      Object.entries(data).forEach(([firebaseKey, lobby]) => {
+        const isPlayer = Array.isArray(lobby.players) && lobby.players.includes(user.uid); // CHANGED: use uid
+        if (isPlayer && lobby.started) {
+          router.push(`/Field?lobby=${firebaseKey}`);
+        }
+      });
+    };
+    lobbiesRef.on('value', handleValue);
+    return () => lobbiesRef.off('value', handleValue);
+  }, [user, router]);
 
   return (
     <div style={{ minHeight: '100vh', background: '#341A37', padding: 40 }}>
@@ -226,10 +249,23 @@ export default function LobbyPage() {
       <div style={{ maxWidth: 800, margin: '0 auto', display: 'flex', flexWrap: 'wrap', gap: 24, justifyContent: 'center' }}>
         {lobbies.map((lobby) => {
           const isHost = user && lobby.ownerId === user.uid;
-          const isPlayer = user && Array.isArray(lobby.players) && lobby.players.includes(user.displayName);
+          const isPlayer = user && Array.isArray(lobby.players) && lobby.players.includes(user.uid); // CHANGED: use uid
           const hasJoined = isHost || isPlayer;
           const userHasDecks = Array.isArray(userDecks) && userDecks.length > 0;
           const userDeckId = lobby.decks && lobby.decks[user?.uid];
+
+          // Enable Start Duel only if both players are present and both have decks
+          const canStartDuel =
+            user &&
+            isHost &&
+            !lobby.started &&
+            Array.isArray(lobby.players) &&
+            lobby.players.length === 1 && // Only one other player (host + 1)
+            lobby.decks &&
+            lobby.decks[lobby.ownerId] &&
+            lobby.decks &&
+            Object.keys(lobby.decks).length === 2 && // Both host and player have decks
+            Object.values(lobby.decks).every(Boolean);
 
           return (
             <Card key={lobby.firebaseKey} style={{ width: 320, background: '#222', color: '#fff', borderRadius: 12 }}>
@@ -271,36 +307,13 @@ export default function LobbyPage() {
                     </Form.Select>
                   </Form.Group>
                 )}
-                {/* Host can start the duel if at least one player joined and all have selected decks */}
-                {user && isHost && !lobby.started && (
-                  <Button size="sm" variant="success" className="mt-3" onClick={() => handleStartDuel(lobby)} disabled={!lobby.decks || !lobby.decks[lobby.ownerId]}>
-                    Start Duel (Solo)
-                  </Button>
-                )}
-                {user && isHost && !lobby.started && Array.isArray(lobby.players) && lobby.players.length > 0 && (
-                  <Button
-                    size="sm"
-                    variant="success"
-                    className="mt-3 ms-2"
-                    onClick={() => handleStartDuel(lobby)}
-                    disabled={
-                      !lobby.decks ||
-                      !lobby.decks[lobby.ownerId] ||
-                      lobby.players.some((playerName) => {
-                        // Find the deck for this player by matching displayName to the deck's owner name
-                        // If you store player UID instead of displayName, adjust accordingly
-                        const playerUid = Object.keys(lobby.decks).find((uid) => {
-                          const deckObj = userDecks.find((d) => d.firebaseKey === lobby.decks[uid]);
-                          return deckObj && deckObj.ownerName === playerName;
-                        });
-                        return !playerUid || !lobby.decks[playerUid];
-                      })
-                    }
-                  >
+                {/* Host can start the duel if both players are present and both have selected decks */}
+                {canStartDuel && (
+                  <Button size="sm" variant="success" className="mt-3" onClick={() => handleStartDuel(lobby)}>
                     Start Duel
                   </Button>
                 )}
-                {/* Join button logic with presence check */}
+                {/* Join button logic */}
                 {user && !isHost && !isPlayer && (Array.isArray(lobby.players) ? lobby.players.length : 0) + 1 < lobby.maxPlayers && (
                   <Button size="sm" variant="success" className="mt-3" onClick={() => handleJoin(lobby)} disabled={!selectedDeck}>
                     Join
